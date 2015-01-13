@@ -1,5 +1,7 @@
 package com.ofg.fraud
 
+import com.codahale.metrics.Counter
+import com.codahale.metrics.MetricRegistry
 import com.ofg.fraud.model.LoanApplication
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient
 import groovy.json.JsonBuilder
@@ -15,8 +17,22 @@ import javax.validation.constraints.NotNull
 @RequestMapping('/api')
 class FraudController {
 
+    private ServiceRestClient serviceRestClient;
+
+    private MetricRegistry metricRegistry;
+
+    private Counter checkCounter;
+
+    private Counter fraudApplicationCounter;
+
     @Autowired
-    ServiceRestClient serviceRestClient;
+    FraudController(ServiceRestClient serviceRestClient, MetricRegistry metricRegistry) {
+        this.serviceRestClient = serviceRestClient;
+        this.metricRegistry = metricRegistry;
+
+        checkCounter = metricRegistry.counter("fraud-check-counter");
+        fraudApplicationCounter = metricRegistry.counter("fraud-application-counter");
+    }
 
 
     @RequestMapping(value = "/loanApplication/{loanApplicationId}",
@@ -28,10 +44,13 @@ class FraudController {
             @RequestBody LoanApplication loanApplication) {
 
 
+        checkCounter.inc();
+
         def fraudStatus = "GREEN";
 
         if (loanApplication.age <= 21 || loanApplication.age >= 65) {
             fraudStatus = "RED"
+            fraudApplicationCounter.inc()
         }
 
         def json = new JsonBuilder()
