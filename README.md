@@ -15,7 +15,7 @@ In this template we are using the following 4finance custom libraries (available
 
 ## What should I do after I clone the repo?
 
-You can remove all the caching related libraries, annotations and **com.ofg.twitter** packages.
+You can remove all the caching related libraries, annotations and **com.ofg.fraud** packages.
 Next adjust all the properties and then you have an empty project - you're now ready to go.
 
 ## How can I run it?
