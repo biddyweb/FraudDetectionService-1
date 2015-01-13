@@ -3,7 +3,7 @@
         "this": "com/ofg/fraud-detection-service",
         "dependencies": {
             "decision-maker": {
-                "path": "com/ofg/loan-application-decision-maker"
+                "path": "com/ofg/hackathon/decisionmaker"
             }
         }
     }
